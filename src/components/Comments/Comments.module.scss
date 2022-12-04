@@ -13,6 +13,15 @@
   border-bottom: 2px solid rgba(#767676, 0.2);
 }
 
+.commentsTopLikes {
+  display: flex;
+  align-items: center;
+
+  img {
+    margin-right: 8px;
+  }
+}
+
 .button {
   width: 234px;
   height: 36px;

@@ -7,20 +7,26 @@ import {CommentsType, CommentType} from "src/types/comments";
 import Comment from "../Comment/Comment";
 import Layout from "../Layout/Layout";
 import styles from "./Comments.module.scss";
+import likesSumIcon from "../../assets/sum-likes.svg";
 
 type ICommentsProps = {};
 
 const Comments: React.FC<ICommentsProps> = () => {
   const [authors, setAuthors] = React.useState([]);
   const [comments, setComments] = React.useState<any[]>([]);
-  const [pageCount, setPageCount] = React.useState(1);
+  const [pageCount, setPageCount] = React.useState<number>(1);
   const [fetching, setFetching] = React.useState(true);
   const [totalCount, setTotalCount] = React.useState(0);
 
   React.useEffect(() => {
     getAuthorsRequest().then((res) => setAuthors(res));
+  }, []);
+
+  React.useEffect(() => {
     if (fetching) {
+      // fetching выводится 2 раза, хз почему
       console.log("fetching");
+      // запрос принимает номер страницы и выводит данные
       getCommentsRequest(pageCount)
         .then((res) => {
           setComments([...comments, ...res.data]);
@@ -52,11 +58,18 @@ const Comments: React.FC<ICommentsProps> = () => {
 
   // console.log(sortComments);
 
+  const sumOfLikes = sortComments
+    .map((item) => item.likes)
+    .reduce((acc, number) => acc + number, 0);
+
   return (
     <Layout>
       <div className={styles.commentsTop}>
         <p>{comments.length} комментариев</p>
-        <p>8 632</p>
+        <div className={styles.commentsTopLikes}>
+          <img src={likesSumIcon} alt="all likes" />
+          <p>{sumOfLikes}</p>
+        </div>
       </div>
       <div className={styles.comments}>
         {comments &&

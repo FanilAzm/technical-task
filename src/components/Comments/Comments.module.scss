@@ -1,0 +1,26 @@
+.comments {
+  width: 562px;
+  margin-top: 32px;
+  margin-bottom: 60px;
+}
+
+.commentsTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 562px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(#767676, 0.2);
+}
+
+.button {
+  width: 234px;
+  height: 36px;
+  background: #313439;
+  backdrop-filter: blur(13.5px);
+  border-radius: 4px;
+  border: none;
+  font-family: "Lato", sans-serif;
+  color: #fff;
+  cursor: pointer;
+}

@@ -1,0 +1,13 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 52px;
+  padding-bottom: 64px;
+  background-image: url("../../assets/Comments.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top center;
+}

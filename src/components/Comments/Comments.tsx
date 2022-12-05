@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import getAuthorsRequest from "src/api/authors/getAuthorsRequest";
 import getCommentsRequest from "src/api/comments/getCommentsRequest";
 import {IAuthor} from "src/types/authors";
-import {IComment} from "src/types/comments";
+import {IComment, IComments} from "src/types/comments";
 import Comment from "../Comment/Comment";
 import Layout from "../Layout/Layout";
 import styles from "./Comments.module.scss";
@@ -19,11 +19,23 @@ const Comments: React.FC<ICommentsProps> = () => {
   const [fetching, setFetching] = React.useState(true);
   const [totalCount, setTotalCount] = React.useState(0);
 
-  console.log(pageCount);
-
   // Получаем данные авторов
   React.useEffect(() => {
-    getAuthorsRequest().then((res) => setAuthors(res));
+    let ignore = false;
+
+    getAuthorsRequest()
+      .then((res: IAuthor[]) => {
+        if (!ignore) {
+          setAuthors(res);
+        }
+      })
+      .catch((error) =>
+        toast.error("Не удалось загрузить комментарий, попробуйте ещё раз"),
+      );
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // Получаем данные комментариев
@@ -32,12 +44,12 @@ const Comments: React.FC<ICommentsProps> = () => {
 
     if (fetching) {
       getCommentsRequest(pageCount)
-        .then((res) => {
+        .then((res: IComments) => {
           if (!ignore) {
+            toast.success("Комментарии загружены");
             setComments([...comments, ...res.data]);
             setPageCount((prevState) => prevState + 1);
             setTotalCount(res.pagination.total_pages);
-            toast.success("Комментарии загружены");
           }
         })
         .catch((error) =>
@@ -55,7 +67,7 @@ const Comments: React.FC<ICommentsProps> = () => {
   const sortComments = comments
     .map((comment: IComment) => {
       const withCurrentId = authors.filter(
-        (author) => author["id"] === comment["author"],
+        (author: IAuthor) => author.id === comment.author,
       );
 
       const author = withCurrentId.reduce((acc: any, curr: any) => {

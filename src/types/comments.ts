@@ -4,13 +4,13 @@ export interface IComments {
     size: number;
     total_pages: number;
   };
-  data: IComment;
+  data: IComment[];
 }
 
 export interface IComment {
   id: number;
-  name: string;
-  avatar: string;
+  name?: string;
+  avatar?: string;
   created: string;
   text: string;
   author: number;

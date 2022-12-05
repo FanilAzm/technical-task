@@ -2,10 +2,10 @@ import * as React from "react";
 import styles from "./Comment.module.scss";
 import avatarImage from "../../assets/avatar.jpeg";
 import likeIcon from "../../assets/like.svg";
-import {CommentType} from "src/types/comments";
+import {IComment} from "src/types/comments";
 
 type ICommentProps = {
-  item: CommentType;
+  item: IComment;
 };
 
 const Comment: React.FC<ICommentProps> = ({item}) => {

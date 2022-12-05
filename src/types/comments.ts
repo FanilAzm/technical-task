@@ -1,13 +1,13 @@
-export type CommentsType = {
+export interface IComments {
   pagination: {
     page: number;
     size: number;
     total_pages: number;
   };
-  data: CommentType;
-};
+  data: IComment;
+}
 
-export type CommentType = {
+export interface IComment {
   id: number;
   name: string;
   avatar: string;
@@ -16,4 +16,4 @@ export type CommentType = {
   author: number;
   parent: null;
   likes: number;
-};
+}

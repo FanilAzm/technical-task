@@ -1,8 +1,10 @@
 import * as React from "react";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import getAuthorsRequest from "src/api/authors/getAuthorsRequest";
 import getCommentsRequest from "src/api/comments/getCommentsRequest";
-import {AuthorType} from "src/types/authors";
-import {CommentType} from "src/types/comments";
+import {IAuthor} from "src/types/authors";
+import {IComment} from "src/types/comments";
 import Comment from "../Comment/Comment";
 import Layout from "../Layout/Layout";
 import styles from "./Comments.module.scss";
@@ -11,11 +13,13 @@ import likesSumIcon from "../../assets/sum-likes.svg";
 type ICommentsProps = {};
 
 const Comments: React.FC<ICommentsProps> = () => {
-  const [authors, setAuthors] = React.useState<AuthorType[]>([]);
-  const [comments, setComments] = React.useState<CommentType[]>([]);
+  const [authors, setAuthors] = React.useState<IAuthor[]>([]);
+  const [comments, setComments] = React.useState<IComment[]>([]);
   const [pageCount, setPageCount] = React.useState(1);
   const [fetching, setFetching] = React.useState(true);
   const [totalCount, setTotalCount] = React.useState(0);
+
+  console.log(pageCount);
 
   // Получаем данные авторов
   React.useEffect(() => {
@@ -24,29 +28,39 @@ const Comments: React.FC<ICommentsProps> = () => {
 
   // Получаем данные комментариев
   React.useEffect(() => {
+    let ignore = false;
+
     if (fetching) {
-      // fetching выводится 2 раза, не пойму почему...
-      console.log("fetching");
       getCommentsRequest(pageCount)
         .then((res) => {
-          setComments([...comments, ...res.data]);
-          setPageCount((prevState) => prevState + 1);
-          setTotalCount(res.pagination.total_pages);
+          if (!ignore) {
+            setComments([...comments, ...res.data]);
+            setPageCount((prevState) => prevState + 1);
+            setTotalCount(res.pagination.total_pages);
+            toast.success("Комментарии загружены");
+          }
         })
+        .catch((error) =>
+          toast.error("Не удалось загрузить комментарий, попробуйте ещё раз"),
+        )
         .finally(() => setFetching(false));
     }
+
+    return () => {
+      ignore = true;
+    };
   }, [fetching]);
 
   // Объединяем массивы комментариев и авторов в один
   const sortComments = comments
-    .map((comment: CommentType) => {
+    .map((comment: IComment) => {
       const withCurrentId = authors.filter(
         (author) => author["id"] === comment["author"],
       );
 
       const author = withCurrentId.reduce((acc: any, curr: any) => {
-        acc["name"] = curr["name"];
-        acc["avatar"] = curr["avatar"];
+        acc.name = curr.name;
+        acc.avatar = curr.avatar;
 
         return acc;
       }, {});
@@ -57,7 +71,7 @@ const Comments: React.FC<ICommentsProps> = () => {
 
   // Считаем сумму лайков
   const sumOfLikes = sortComments
-    .map((item: CommentType) => item.likes)
+    .map((item: IComment) => item.likes)
     .reduce((acc, number) => acc + number, 0);
 
   return (
@@ -71,7 +85,7 @@ const Comments: React.FC<ICommentsProps> = () => {
       </div>
       <div className={styles.comments}>
         {comments &&
-          sortComments.map((item: CommentType) => {
+          sortComments.map((item: IComment) => {
             return (
               <div key={item.id}>
                 {!item.parent && <Comment item={item} />}
@@ -85,9 +99,12 @@ const Comments: React.FC<ICommentsProps> = () => {
           })}
       </div>
       {totalCount >= pageCount ? (
-        <button onClick={() => setFetching(true)} className={styles.button}>
-          Загрузить еще
-        </button>
+        <div>
+          <button onClick={() => setFetching(true)} className={styles.button}>
+            Загрузить еще
+          </button>
+          <ToastContainer />
+        </div>
       ) : null}
     </Layout>
   );

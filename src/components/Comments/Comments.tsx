@@ -79,7 +79,7 @@ const Comments: React.FC<ICommentsProps> = () => {
 
       return {...comment, ...author};
     })
-    .sort((x, y) => Date.parse(x.created) - Date.parse(y.created));
+    .sort((x, y) => Date.parse(x.id) - Date.parse(y.id));
 
   // Считаем сумму лайков
   const sumOfLikes = sortComments

@@ -2,13 +2,13 @@ import * as React from "react";
 import styles from "./Comment.module.scss";
 import avatarImage from "../../assets/avatar.jpeg";
 import likeIcon from "../../assets/like.svg";
+import {CommentType} from "src/types/comments";
 
 type ICommentProps = {
-  item: any;
+  item: CommentType;
 };
 
 const Comment: React.FC<ICommentProps> = ({item}) => {
-  // console.log(item);
   const year = item.created.substr(0, 4);
   const month = item.created.substr(5, 2);
   const day = item.created.substr(8, 2);
@@ -18,8 +18,9 @@ const Comment: React.FC<ICommentProps> = ({item}) => {
   const hours = Math.floor((createdMilliseconds / (1000 * 60 * 60)) % 24);
   const dayMilliseconds = 86400000;
 
-  function decOfNum(number: any, titles: any) {
-    let decCache: any[] = [];
+  // Ф-ия склонения слов в зависимости от приходящего числа
+  function decOfNum(number: number, titles: string[]) {
+    let decCache: number[] = [];
     let decCases = [2, 0, 1, 1, 1, 2];
 
     if (!decCache[number])

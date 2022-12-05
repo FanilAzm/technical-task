@@ -9,6 +9,8 @@ export type CommentsType = {
 
 export type CommentType = {
   id: number;
+  name: string;
+  avatar: string;
   created: string;
   text: string;
   author: number;

@@ -38,3 +38,16 @@
   color: #fff;
   cursor: pointer;
 }
+
+@media only screen and (max-width: 576px) {
+  .comments {
+    width: auto;
+    margin-bottom: 40px;
+  }
+  .commentsTop {
+    width: 100%;
+  }
+  .childComment {
+    margin-left: 20px;
+  }
+}
